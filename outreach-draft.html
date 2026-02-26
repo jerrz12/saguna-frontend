@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outreach Draft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./outreach-draft.css">
+</head>
+<body>
+  <main class="page">
+    <section class="layout">
+      <div class="editor-wrap">
+        <div class="meta">
+          <div class="row"><label>To:</label><input value=""></div>
+          <div class="row"><label>From:</label><input value=""></div>
+          <div class="row"><label>Subject:</label><input value=""></div>
+        </div>
+        <div class="toolbar" role="toolbar" aria-label="Text formatting">
+          <div class="custom-select" id="font-family">
+            <button type="button" class="custom-select-trigger" title="Font">
+              <span class="custom-select-label">Sans Serif</span>
+              <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 0.5L5 4.5L9 0.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <ul class="custom-select-menu">
+              <li class="custom-select-option selected" data-value="Arial" style="font-family:Arial,sans-serif">Sans Serif</li>
+              <li class="custom-select-option" data-value="Georgia" style="font-family:Georgia,serif">Serif</li>
+              <li class="custom-select-option" data-value="'Courier New'" style="font-family:'Courier New',monospace">Fixed Width</li>
+              <li class="custom-select-option" data-value="'Arial Black'" style="font-family:'Arial Black',sans-serif">Wide</li>
+              <li class="custom-select-option" data-value="'Arial Narrow'" style="font-family:'Arial Narrow',sans-serif">Narrow</li>
+              <li class="custom-select-option" data-value="'Comic Sans MS'" style="font-family:'Comic Sans MS',cursive">Comic Sans MS</li>
+              <li class="custom-select-option" data-value="Garamond" style="font-family:Garamond,serif">Garamond</li>
+              <li class="custom-select-option" data-value="Tahoma" style="font-family:Tahoma,sans-serif">Tahoma</li>
+              <li class="custom-select-option" data-value="'Trebuchet MS'" style="font-family:'Trebuchet MS',sans-serif">Trebuchet MS</li>
+              <li class="custom-select-option" data-value="Verdana" style="font-family:Verdana,sans-serif">Verdana</li>
+            </ul>
+          </div>
+
+          <span class="tool-sep"></span>
+
+          <div class="custom-select" id="font-size">
+            <button type="button" class="custom-select-trigger" title="Size">
+              <span class="custom-select-label">Normal</span>
+              <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 0.5L5 4.5L9 0.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <ul class="custom-select-menu">
+              <li class="custom-select-option" data-value="1">Small</li>
+              <li class="custom-select-option selected" data-value="3">Normal</li>
+              <li class="custom-select-option" data-value="5">Large</li>
+              <li class="custom-select-option" data-value="7">Huge</li>
+            </ul>
+          </div>
+
+          <span class="tool-sep"></span>
+
+          <button type="button" class="tool-btn" data-cmd="bold" title="Bold (⌘B)">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>
+          </button>
+          <button type="button" class="tool-btn" data-cmd="italic" title="Italic (⌘I)">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg>
+          </button>
+          <button type="button" class="tool-btn" data-cmd="underline" title="Underline (⌘U)">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg>
+          </button>
+
+          <span class="tool-sep"></span>
+
+          <label class="tool-color" title="Text color">
+            <svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M11 2L5.5 16h2.25l1.12-3h6.25l1.12 3h2.25L13 2h-2zm-1.38 9L12 4.67 14.38 11H9.62z"/></svg>
+            <span class="color-bar" id="text-color-bar" style="background:#000000"></span>
+            <input type="color" id="text-color" value="#000000">
+          </label>
+          <label class="tool-color" title="Background color">
+            <svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15a1.49 1.49 0 0 0 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/></svg>
+            <span class="color-bar" id="highlight-color-bar" style="background:#fff475"></span>
+            <input type="color" id="highlight-color" value="#fff475">
+          </label>
+
+          <span class="tool-sep"></span>
+
+          <button type="button" class="tool-btn" data-cmd="justifyLeft" title="Align left">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zM3 21h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
+          </button>
+          <button type="button" class="tool-btn" data-cmd="justifyCenter" title="Align center">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"/></svg>
+          </button>
+          <button type="button" class="tool-btn" data-cmd="justifyRight" title="Align right">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"/></svg>
+          </button>
+
+          <span class="tool-sep"></span>
+
+          <button type="button" class="tool-btn" data-cmd="insertOrderedList" title="Numbered list">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg>
+          </button>
+          <button type="button" class="tool-btn" data-cmd="insertUnorderedList" title="Bulleted list">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
+          </button>
+
+          <span class="tool-sep"></span>
+
+          <button type="button" class="tool-btn" data-cmd="outdent" title="Indent less">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M11 17h10v-2H11v2zm-8-5l4 4V8l-4 4zm0 9h18v-2H3v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>
+          </button>
+          <button type="button" class="tool-btn" data-cmd="indent" title="Indent more">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M3 21h18v-2H3v2zM3 8v8l4-4-4-4zm8 9h10v-2H11v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>
+          </button>
+
+          <span class="tool-sep"></span>
+
+          <button type="button" class="tool-btn" data-action="quote" title="Quote">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+          </button>
+
+          <span class="tool-sep"></span>
+
+          <button type="button" class="tool-btn" data-cmd="strikeThrough" title="Strikethrough">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M10 19h4v-3h-4v3zM5 4v3h5v3h4V7h5V4H5zM3 14h18v-2H3v2z"/></svg>
+          </button>
+          <button type="button" class="tool-btn" data-cmd="removeFormat" title="Remove formatting">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M3.27 5L2 6.27l6.97 6.97L6.5 19h3l1.57-3.66L16.73 21 18 19.73 3.27 5zM6 5v.18L8.82 8h2.4l-.72 1.68 2.1 2.1L14.21 8H20V5H6z"/></svg>
+          </button>
+
+          <span class="tool-sep"></span>
+
+          <button type="button" class="tool-btn" data-action="link" title="Insert link">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+          </button>
+        </div>
+        <article class="draft" contenteditable="true"></article>
+        <div class="actions">
+          <button class="btn primary">Send Email</button>
+          <button class="btn" id="copy-btn">Copy to Clipboard</button>
+        </div>
+      </div>
+
+      <aside class="right-panel">
+        <button class="regen">Regenerate Draft</button>
+        <section class="box">
+          <div class="box-title">Edit</div>
+          <div class="field"><label>Tone:</label><input class="field-input" value=""></div>
+          <div class="field"><label>Length:</label><input class="field-input" value=""></div>
+        </section>
+        <section class="box">
+          <div class="box-title">Review/Edit Points</div>
+          <textarea class="points" rows="8"></textarea>
+          <a href="#" class="add">Add Points +</a>
+        </section>
+      </aside>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var draft = document.querySelector(".draft");
+      var toolbar = document.querySelector(".toolbar");
+      var textColor = document.getElementById("text-color");
+      var highlightColor = document.getElementById("highlight-color");
+      if (!draft || !toolbar) return;
+
+      var savedRange = null;
+
+      function saveSelection() {
+        var sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0) return;
+        savedRange = sel.getRangeAt(0);
+      }
+
+      function restoreSelection() {
+        if (!savedRange) return;
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+      }
+
+      function exec(cmd, value) {
+        restoreSelection();
+        draft.focus();
+        document.execCommand(cmd, false, value || null);
+        saveSelection();
+      }
+
+      try {
+        document.execCommand("styleWithCSS", false, true);
+      } catch (e) {}
+
+      draft.addEventListener("mouseup", saveSelection);
+      draft.addEventListener("keyup", saveSelection);
+      draft.addEventListener("focus", saveSelection);
+
+      /* Prevent mousedown on toolbar controls from stealing focus from the draft */
+      toolbar.addEventListener("mousedown", function (event) {
+        if (event.target.closest(".tool-btn") || event.target.closest(".custom-select")) {
+          event.preventDefault();
+        }
+      });
+
+      toolbar.addEventListener("click", function (event) {
+        var btn = event.target.closest(".tool-btn");
+        if (!btn) return;
+
+        if (btn.dataset.action === "link") {
+          var href = window.prompt("Enter URL");
+          if (href) {
+            exec("createLink", href.trim());
+          }
+          return;
+        }
+        if (btn.dataset.action === "quote") {
+          exec("formatBlock", "blockquote");
+          return;
+        }
+
+        var cmd = btn.dataset.cmd;
+        if (cmd) {
+          exec(cmd);
+        }
+      });
+
+      /* ── Custom dropdown logic ── */
+      function initCustomSelect(id, callback) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        var trigger = el.querySelector(".custom-select-trigger");
+        var menu = el.querySelector(".custom-select-menu");
+        var labelEl = el.querySelector(".custom-select-label");
+
+        trigger.addEventListener("click", function (e) {
+          e.stopPropagation();
+          document.querySelectorAll(".custom-select.open").forEach(function (s) {
+            if (s !== el) s.classList.remove("open");
+          });
+          el.classList.toggle("open");
+        });
+
+        menu.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var opt = e.target.closest(".custom-select-option");
+          if (!opt) return;
+          menu.querySelectorAll(".custom-select-option").forEach(function (o) {
+            o.classList.remove("selected");
+          });
+          opt.classList.add("selected");
+          labelEl.textContent = opt.textContent;
+          el.classList.remove("open");
+          if (callback) callback(opt.dataset.value);
+        });
+      }
+
+      document.addEventListener("click", function () {
+        document.querySelectorAll(".custom-select.open").forEach(function (s) {
+          s.classList.remove("open");
+        });
+      });
+
+      initCustomSelect("font-family", function (value) {
+        exec("fontName", value);
+      });
+
+      initCustomSelect("font-size", function (value) {
+        exec("fontSize", value);
+      });
+
+      /* ── Color pickers ── */
+      if (textColor) {
+        textColor.addEventListener("input", function () {
+          exec("foreColor", textColor.value);
+          var bar = document.getElementById("text-color-bar");
+          if (bar) bar.style.background = textColor.value;
+        });
+      }
+
+      if (highlightColor) {
+        highlightColor.addEventListener("input", function () {
+          exec("hiliteColor", highlightColor.value);
+          var bar = document.getElementById("highlight-color-bar");
+          if (bar) bar.style.background = highlightColor.value;
+        });
+      }
+
+      /* ── Copy to clipboard ── */
+      var copyBtn = document.getElementById("copy-btn");
+      if (copyBtn) {
+        copyBtn.addEventListener("click", function () {
+          var text = draft.innerText || "";
+          if (!text.trim()) return;
+          navigator.clipboard.writeText(text).then(function () {
+            copyBtn.textContent = "Copied!";
+            setTimeout(function () { copyBtn.textContent = "Copy to Clipboard"; }, 2000);
+          }).catch(function () {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand("copy");
+            document.body.removeChild(ta);
+            copyBtn.textContent = "Copied!";
+            setTimeout(function () { copyBtn.textContent = "Copy to Clipboard"; }, 2000);
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

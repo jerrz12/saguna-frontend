@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leads Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <h1>Leads</h1>
+    </header>
+
+    <section class="controls">
+      <div class="filter-row">
+        <div class="sector-dropdown" id="sector-dropdown">
+          <button class="sector-trigger" id="sector-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="sector-options">
+            <span class="sector-prefix">Sector:</span>
+            <span class="sector-value" id="sector-value">All</span>
+            <span class="sector-arrow">&#9662;</span>
+          </button>
+          <ul class="sector-menu" id="sector-options" role="listbox" hidden>
+            <li role="option" tabindex="0" aria-selected="true" data-value="All">All</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Healthcare">Healthcare</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Fintech">Fintech</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="InsurTech">InsurTech</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="FoodTech">FoodTech</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="AgTech">AgTech</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="HealthTech / Digital Health">HealthTech / Digital Health</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Enterprise SaaS">Enterprise SaaS</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="AI / ML">AI / ML</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="DevTools / Infra">DevTools / Infra</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Cybersecurity">Cybersecurity</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Climate / Energy">Climate / Energy</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Marketplace">Marketplace</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Other">Other</li>
+          </ul>
+          <input type="hidden" id="sector-input" name="sector" value="All">
+        </div>
+
+        <div class="sector-dropdown" id="yc-dropdown">
+          <button class="sector-trigger" id="yc-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="yc-options">
+            <span class="sector-prefix">YC:</span>
+            <span class="sector-value" id="yc-value">All</span>
+            <span class="sector-arrow">&#9662;</span>
+          </button>
+          <ul class="sector-menu" id="yc-options" role="listbox" hidden>
+            <li role="option" tabindex="0" aria-selected="true" data-value="All">All</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="YC Only">YC Only</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Non-YC Only">Non-YC Only</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Unknown (not matched yet)">Unknown (not matched yet)</li>
+          </ul>
+          <input type="hidden" id="yc-input" name="yc" value="All">
+        </div>
+
+        <div class="sector-dropdown formd-dropdown" id="formd-dropdown">
+          <button class="sector-trigger" id="formd-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="formd-options">
+            <span class="sector-prefix">Form D:</span>
+            <span class="sector-value" id="formd-value">Any</span>
+            <span class="sector-arrow">&#9662;</span>
+          </button>
+          <ul class="sector-menu" id="formd-options" role="listbox" hidden>
+            <li role="option" tabindex="0" aria-selected="true" data-value="Any">Any</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Has Form D">Has Form D</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="No Form D">No Form D</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Possible Match / Needs Review">Possible Match / Needs Review</li>
+            <li role="option" tabindex="0" aria-selected="false" data-value="Unknown (not checked yet)">Unknown (not checked yet)</li>
+          </ul>
+          <input type="hidden" id="formd-input" name="form_d" value="Any">
+        </div>
+
+        <div class="score-filter">
+          <span class="label">Score: <span id="score-min">0</span> to <span id="score-max">100</span></span>
+          <input type="range" id="score-range" min="0" max="100" value="0" aria-label="Score range">
+        </div>
+
+        <label class="search-box">
+          <span class="search-icon">&#128269;</span>
+          <input id="search-input" type="text" placeholder="Search companies" aria-label="Search companies">
+        </label>
+      </div>
+
+      <div class="action-row">
+        <a class="btn btn-primary" href="./outreach-draft.html">+ Generate Drafts</a>
+        <button class="btn btn-secondary">Bulk Update Status</button>
+      </div>
+    </section>
+
+    <section class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="sortable-th" data-sort-key="company">Company <span class="th-chev">&#9662;</span></th>
+            <th class="sortable-th" data-sort-key="sector">Sector <span class="th-chev">&#9662;</span></th>
+            <th class="sortable-th" data-sort-key="why_now">Why Now? <span class="th-chev">&#9662;</span></th>
+            <th class="sortable-th" data-sort-key="sources">Sources <span class="th-chev">&#9662;</span></th>
+            <th class="sortable-th" data-sort-key="score">Score <span class="th-chev">&#9662;</span></th>
+            <th class="sortable-th" data-sort-key="status">Status <span class="th-chev">&#9662;</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var dropdownRegistry = [];
+      var searchInput = document.getElementById("search-input");
+      var tableBody = document.querySelector("tbody");
+      var sortableHeaders = Array.prototype.slice.call(document.querySelectorAll(".sortable-th"));
+      var currentLeads = [];
+      var activeSortKey = null;
+      var loadToken = 0;
+      var searchDebounceTimer = null;
+
+      function closeAllDropdowns(exceptNode) {
+        dropdownRegistry.forEach(function (item) {
+          if (item.dropdown !== exceptNode) {
+            item.setOpen(false);
+          }
+        });
+      }
+
+      function initDropdown(config) {
+        var dropdown = document.getElementById(config.dropdownId);
+        if (!dropdown) return;
+
+        var trigger = document.getElementById(config.triggerId);
+        var menu = document.getElementById(config.menuId);
+        var valueNode = document.getElementById(config.valueId);
+        var hiddenInput = document.getElementById(config.inputId);
+        var options = Array.prototype.slice.call(menu.querySelectorAll("[role='option']"));
+
+        function setOpen(nextState) {
+          if (nextState) {
+            closeAllDropdowns(dropdown);
+          }
+          dropdown.classList.toggle("is-open", nextState);
+          menu.hidden = !nextState;
+          trigger.setAttribute("aria-expanded", String(nextState));
+        }
+
+        function selectValue(value) {
+          valueNode.textContent = value;
+          hiddenInput.value = value;
+          options.forEach(function (opt) {
+            opt.setAttribute("aria-selected", String(opt.dataset.value === value));
+          });
+          setOpen(false);
+          loadLeads();
+        }
+
+        trigger.addEventListener("click", function () {
+          setOpen(menu.hidden);
+        });
+
+        options.forEach(function (option) {
+          option.addEventListener("click", function () {
+            selectValue(option.dataset.value);
+          });
+          option.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              selectValue(option.dataset.value);
+            }
+          });
+        });
+
+        dropdownRegistry.push({ dropdown: dropdown, setOpen: setOpen, trigger: trigger });
+      }
+
+      initDropdown({ dropdownId: "sector-dropdown", triggerId: "sector-trigger", menuId: "sector-options", valueId: "sector-value", inputId: "sector-input" });
+      initDropdown({ dropdownId: "yc-dropdown", triggerId: "yc-trigger", menuId: "yc-options", valueId: "yc-value", inputId: "yc-input" });
+      initDropdown({ dropdownId: "formd-dropdown", triggerId: "formd-trigger", menuId: "formd-options", valueId: "formd-value", inputId: "formd-input" });
+
+      var statusOptions = [
+        "New Lead", "Reviewed", "Draft Generated", "Ready to Send", "Contacted", "Follow-up Due", "Follow-up Sent", "Replied", "Meeting Booked", "Qualified Opportunity", "Not Fit", "Do Not Contact", "Archived"
+      ];
+
+      function initStatusDropdown(dropdown) {
+        var trigger = dropdown.querySelector(".status-trigger");
+        var menu = dropdown.querySelector(".status-menu");
+        var valueNode = dropdown.querySelector(".status-value");
+        var hiddenInput = dropdown.querySelector("input[type='hidden']");
+        if (!trigger || !menu || !valueNode || !hiddenInput) return;
+
+        var initial = dropdown.getAttribute("data-initial") || "New Lead";
+        menu.innerHTML = statusOptions.map(function (value) {
+          var isSelected = value === initial ? "true" : "false";
+          return '<li role="option" tabindex="0" aria-selected="' + isSelected + '" data-value="' + value + '">' + value + '</li>';
+        }).join("");
+
+        var options = Array.prototype.slice.call(menu.querySelectorAll("[role='option']"));
+
+        function setOpen(nextState) {
+          if (nextState) {
+            closeAllDropdowns(dropdown);
+          }
+          dropdown.classList.toggle("is-open", nextState);
+          menu.hidden = !nextState;
+          trigger.setAttribute("aria-expanded", String(nextState));
+        }
+
+        function selectValue(value) {
+          valueNode.textContent = value;
+          hiddenInput.value = value;
+          options.forEach(function (opt) {
+            opt.setAttribute("aria-selected", String(opt.dataset.value === value));
+          });
+          setOpen(false);
+        }
+
+        trigger.addEventListener("click", function () {
+          setOpen(menu.hidden);
+        });
+
+        options.forEach(function (option) {
+          option.addEventListener("click", function () {
+            selectValue(option.dataset.value);
+          });
+          option.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              selectValue(option.dataset.value);
+            }
+          });
+        });
+
+        dropdownRegistry.push({ dropdown: dropdown, setOpen: setOpen, trigger: trigger });
+      }
+
+      function scoreClass(score) {
+        if (score >= 90) return "good";
+        if (score >= 80) return "strong";
+        if (score >= 75) return "warn";
+        return "low";
+      }
+
+      function sourceBadge(source) {
+        if (source === "TC") return '<span class="src tc">TC</span>';
+        if (source === "YC") return '<span class="src yc">Y</span>';
+        if (source === "SEC") return '<span class="src sec">SEC</span>';
+        return '<span class="src file">DOC</span>';
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function renderLeads(items) {
+        if (!tableBody) return;
+
+        dropdownRegistry = dropdownRegistry.filter(function (item) {
+          return !item.dropdown.classList.contains("status-dropdown");
+        });
+
+        if (!items.length) {
+          tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#7a8597;">No leads found for current filters.</td></tr>';
+          return;
+        }
+
+        tableBody.innerHTML = items.map(function (item, index) {
+          var sources = String(item.sources || "")
+            .split("|")
+            .filter(Boolean)
+            .map(sourceBadge)
+            .join("");
+          var companyInitials = String(item.company || "")
+            .split(/\s+/)
+            .slice(0, 2)
+            .map(function (p) { return p[0] || ""; })
+            .join("")
+            .toUpperCase();
+          var statusSafe = escapeHtml(item.status || "New Lead");
+
+          return '' +
+            '<tr>' +
+              '<td><div class="company"><span class="logo med">' + escapeHtml(companyInitials || "LD") + '</span><span class="name">' + escapeHtml(item.company) + '</span></div></td>' +
+              '<td>' + escapeHtml(item.sector) + '</td>' +
+              '<td>' + escapeHtml(item.why_now) + '</td>' +
+              '<td><div class="sources">' + sources + '</div></td>' +
+              '<td><span class="score ' + scoreClass(Number(item.score || 0)) + '">' + Number(item.score || 0) + '</span></td>' +
+              '<td>' +
+                '<div class="status-dropdown" data-initial="' + statusSafe + '">' +
+                  '<button class="status-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">' +
+                    '<span class="status-value">' + statusSafe + '</span>' +
+                    '<span class="status-arrow">&#9662;</span>' +
+                  '</button>' +
+                  '<ul class="status-menu" role="listbox" hidden></ul>' +
+                  '<input type="hidden" name="status_' + (index + 1) + '" value="' + statusSafe + '">' +
+                '</div>' +
+              '</td>' +
+            '</tr>';
+        }).join("");
+
+        Array.prototype.slice.call(document.querySelectorAll(".status-dropdown")).forEach(function (dropdown) {
+          initStatusDropdown(dropdown);
+        });
+      }
+
+      function loadLeads() {
+        var requestToken = ++loadToken;
+        var params = new URLSearchParams();
+        params.set("sector", document.getElementById("sector-input").value);
+        params.set("yc", document.getElementById("yc-input").value);
+        params.set("form_d", document.getElementById("formd-input").value);
+        params.set("min_score", document.getElementById("score-range").value);
+        if (searchInput && searchInput.value.trim()) {
+          params.set("search", searchInput.value.trim());
+        }
+
+        fetch("/api/leads?" + params.toString())
+          .then(function (res) { return res.json(); })
+          .then(function (payload) {
+            if (requestToken !== loadToken) return;
+            currentLeads = payload.items || [];
+            renderLeads(getSortedLeads(applyClientSearch(currentLeads)));
+          })
+          .catch(function () { renderLeads([]); });
+      }
+
+      function compareText(a, b) {
+        return String(a || "").localeCompare(String(b || ""), undefined, { sensitivity: "base" });
+      }
+
+      function getSortedLeads(items) {
+        var sorted = items.slice();
+        if (!activeSortKey) return sorted;
+
+        sorted.sort(function (a, b) {
+          if (activeSortKey === "score") {
+            return Number(a.score || 0) - Number(b.score || 0);
+          }
+          return compareText(a[activeSortKey], b[activeSortKey]);
+        });
+        return sorted;
+      }
+
+      function applyClientSearch(items) {
+        if (!searchInput) return items;
+        var term = searchInput.value.trim().toLowerCase();
+        if (!term) return items;
+
+        return items.filter(function (item) {
+          return String(item.company || "").toLowerCase().indexOf(term) !== -1;
+        });
+      }
+
+      function updateSortHeaderUI() {
+        sortableHeaders.forEach(function (header) {
+          var key = header.getAttribute("data-sort-key");
+          header.classList.toggle("sorted", key === activeSortKey);
+        });
+      }
+
+      document.addEventListener("click", function (event) {
+        dropdownRegistry.forEach(function (item) {
+          if (!item.dropdown.contains(event.target)) {
+            item.setOpen(false);
+          }
+        });
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          var openItem = null;
+          dropdownRegistry.forEach(function (item) {
+            if (item.dropdown.classList.contains("is-open")) {
+              openItem = item;
+            }
+            item.setOpen(false);
+          });
+          if (openItem) {
+            openItem.trigger.focus();
+          }
+        }
+      });
+
+      var scoreRange = document.getElementById("score-range");
+      var scoreMin = document.getElementById("score-min");
+      if (scoreRange && scoreMin) {
+        scoreRange.addEventListener("input", function () {
+          scoreMin.textContent = scoreRange.value;
+          loadLeads();
+        });
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener("input", function () {
+          clearTimeout(searchDebounceTimer);
+          searchDebounceTimer = setTimeout(loadLeads, 150);
+        });
+      }
+
+      sortableHeaders.forEach(function (header) {
+        header.addEventListener("click", function () {
+          activeSortKey = header.getAttribute("data-sort-key");
+          updateSortHeaderUI();
+          renderLeads(getSortedLeads(applyClientSearch(currentLeads)));
+        });
+      });
+
+      updateSortHeaderUI();
+      loadLeads();
+    })();
+  </script>
+</body>
+</html>
