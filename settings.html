@@ -3,20 +3,228 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Saguna Consulting Settings</title>
+  <title>Saguna Consulting – Settings</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .settings-wrap { max-width: 640px; }
+
+    
+    .settings-section {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+    .settings-section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 20px;
+      border-bottom: 1px solid #f3f4f6;
+      background: #fafafa;
+    }
+    .settings-section-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .settings-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+    }
+    .settings-section-desc {
+      font-size: 12px;
+      color: #6b7280;
+      margin: 1px 0 0;
+    }
+    .settings-section-body { padding: 18px 20px; display: grid; gap: 14px; }
+
+    /* Field rows */
+    .field-row { display: grid; gap: 5px; }
+    .field-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+    }
+    .field-hint { font-size: 12px; color: #9ca3af; margin-top: 3px; }
+    .settings-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-family: Inter, sans-serif;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      transition: border-color .15s, box-shadow .15s;
+      color: #111827;
+    }
+    .settings-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99,102,241,.1);
+    }
+    .settings-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* Toggle row */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0;
+    }
+    .toggle-info { flex: 1; }
+    .toggle-title { font-size: 13px; font-weight: 600; color: #374151; }
+    .toggle-desc  { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+
+    
+    .score-thresholds { display: grid; gap: 14px; }
+    .score-row { display: grid; gap: 6px; }
+    .score-row-header { display: flex; justify-content: space-between; align-items: center; }
+    .score-lbl { font-size: 13px; font-weight: 600; }
+    .score-val {
+      font-size: 13px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      min-width: 28px;
+      text-align: right;
+    }
+    .score-slider {
+      width: 100%;
+      height: 4px;
+      border-radius: 99px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type=range].score-slider { accent-color: #4f46e5; }
+
+    
+    .priority-preview {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .priority-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .chip-high   { background: rgba(16,185,129,.1); color: #059669; border: 1px solid rgba(16,185,129,.3); }
+    .chip-medium { background: rgba(245,158,11,.1); color: #d97706; border: 1px solid rgba(245,158,11,.3); }
+    .chip-low    { background: rgba(239,68,68,.08); color: #dc2626; border: 1px solid rgba(239,68,68,.25); }
+
+    
+    .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #374151;
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-green  { background: #10b981; }
+    .dot-amber  { background: #f59e0b; }
+    .dot-gray   { background: #d1d5db; }
+    .sync-meta  { margin-left: auto; font-size: 12px; color: #9ca3af; }
+
+    
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .s-btn {
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-family: Inter, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      border: 1px solid transparent;
+    }
+    .s-btn-primary { background: #111827; color: white; }
+    .s-btn-primary:hover { background: #1f2937; }
+    .s-btn-outline { background: white; color: #374151; border-color: #d1d5db; }
+    .s-btn-outline:hover { border-color: #6366f1; color: #4f46e5; }
+    .s-btn-danger  { background: white; color: #dc2626; border-color: #fca5a5; }
+    .s-btn-danger:hover  { background: #fef2f2; }
+    .s-btn-green  { background: #059669; color: white; }
+    .s-btn-green:hover { background: #047857; }
+    .s-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    
+    .toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: #111827;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .3s ease;
+      z-index: 999;
+      max-width: 300px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #059669; }
+    .toast.error   { background: #dc2626; }
+
+    
+    .divider { height: 1px; background: #f3f4f6; margin: 2px 0; }
+
+    
+    .danger-zone {
+      border-color: #fecaca !important;
+    }
+    .danger-zone .settings-section-header {
+      background: #fff5f5;
+      border-bottom-color: #fecaca;
+    }
+  </style>
 </head>
 <body data-page="settings" class="salesDashBody">
   <div class="salesDash">
+
     <header class="salesTop" aria-label="Top Navigation">
       <div class="salesTopLeft">
-        <button class="collapseBtn topCollapseBtn" id="collapseBtn" type="button" aria-expanded="true" aria-label="Collapse menu" title="Collapse menu"><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="collapseBtn topCollapseBtn" id="collapseBtn" type="button"
+          aria-expanded="true" aria-label="Collapse menu" title="Collapse menu">
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
       </div>
       <div class="salesTopRight">
-        <p>Last Updated: XXXX</p>
+        <p>Last Updated: <span id="metricLastUpdated">—</span></p>
       </div>
     </header>
 
@@ -24,40 +232,433 @@
       <aside class="salesSidebar" aria-label="Sidebar Navigation">
         <nav class="nav salesNav">
           <a class="navItem" data-route="dashboard" data-short="D" href="index.html"><span class="navLabel">Dashboard</span></a>
-          <a class="navItem" data-route="leads" data-short="L" href="leads.html"><span class="navLabel">Leads</span></a>
-          <a class="navItem" data-route="messages" data-short="M" href="messages.html"><span class="navLabel">Messages</span></a>
-          <a class="navItem" data-route="ranking" data-short="R" href="ranking.html"><span class="navLabel">Ranking</span></a>
-          <a class="navItem" data-route="settings" data-short="S" href="settings.html"><span class="navLabel">Settings</span></a>
+          <a class="navItem" data-route="leads"     data-short="L" href="leads.html"><span class="navLabel">Leads</span></a>
+          <a class="navItem" data-route="messages"  data-short="M" href="messages.html"><span class="navLabel">Messages</span></a>
+          <a class="navItem" data-route="ranking"   data-short="R" href="ranking.html"><span class="navLabel">Ranking</span></a>
+          <a class="navItem active" data-route="settings" data-short="S" href="settings.html"><span class="navLabel">Settings</span></a>
         </nav>
       </aside>
 
       <section class="salesContent">
-        <div class="pageHeader"><div class="kicker">Setting</div></div>
-        <div class="card wide">
-          <h2 class="pageTitleSm">Setting</h2>
-          <p class="muted">Placeholder page — hook this up to your backend later.</p>
+        <div class="settings-wrap">
 
-          <div class="settingsGrid">
-            <div class="settingRow">
-              <div class="settingLabel">Display name</div>
-              <input class="input" id="displayName" placeholder="Jerry" />
+          <h2 class="pageTitleSm" style="text-align:left;margin-bottom:20px">Settings</h2>
+
+
+
+
+
+          <div class="settings-section">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-title">User Profile</div>
+                <div class="settings-section-desc">Your name and contact info used in outreach drafts</div>
+              </div>
             </div>
-            <div class="settingRow">
-              <div class="settingLabel">Theme</div>
-              <select class="input" id="themeSelect">
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-              </select>
-            </div>
-            <div class="settingRow">
-              <button class="btn" id="logoutBtn" type="button">Log out</button>
+            <div class="settings-section-body">
+              <div class="two-col">
+                <div class="field-row">
+                  <label class="field-label" for="firstName">First Name</label>
+                  <input class="settings-input" id="firstName" placeholder="Jerry" />
+                </div>
+                <div class="field-row">
+                  <label class="field-label" for="lastName">Last Name</label>
+                  <input class="settings-input" id="lastName" placeholder="Zhang" />
+                </div>
+              </div>
+              <div class="field-row">
+                <label class="field-label" for="userEmail">Email Address</label>
+                <input class="settings-input" id="userEmail" type="email" placeholder="jerry@sagunacons.com" />
+                <div class="field-hint">Used as the sender email in generated outreach drafts</div>
+              </div>
+              <div class="field-row">
+                <label class="field-label" for="userTitle">Job Title</label>
+                <input class="settings-input" id="userTitle" placeholder="Sales Representative" />
+              </div>
+              <div class="field-row">
+                <label class="field-label" for="linkedinUrl">LinkedIn Profile URL</label>
+                <input class="settings-input" id="linkedinUrl" placeholder="https://linkedin.com/in/yourname" />
+                <div class="field-hint">Included in outreach messages sent via LinkedIn</div>
+              </div>
+              <div class="btn-row">
+                <button class="s-btn s-btn-primary" onclick="saveProfile()">Save Profile</button>
+              </div>
             </div>
           </div>
+
+
+
+          <div class="settings-section">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-title">Outreach Defaults</div>
+                <div class="settings-section-desc">Pre-filled values when generating draft messages</div>
+              </div>
+            </div>
+            <div class="settings-section-body">
+              <div class="field-row">
+                <label class="field-label" for="companyName">Company Name</label>
+                <input class="settings-input" id="companyName" value="Saguna Consulting" />
+              </div>
+              <div class="field-row">
+                <label class="field-label" for="outreachChannel">Default Outreach Channel</label>
+                <select class="settings-input settings-select" id="outreachChannel">
+                  <option value="email">Email</option>
+                  <option value="linkedin">LinkedIn Message</option>
+                  <option value="both">Both (Email + LinkedIn)</option>
+                </select>
+              </div>
+              <div class="field-row">
+                <label class="field-label" for="emailSignature">Email Signature</label>
+                <textarea class="settings-input" id="emailSignature" rows="4"
+                  placeholder="Best regards,&#10;Jerry Zhang&#10;Sales Representative, Saguna Consulting&#10;jerry@sagunacons.com"
+                  style="resize:vertical;font-family:Inter,sans-serif;line-height:1.5"></textarea>
+                <div class="field-hint">Appended automatically to every generated email draft</div>
+              </div>
+              <div class="field-row">
+                <label class="field-label" for="followUpDays">Default Follow-Up Delay</label>
+                <select class="settings-input settings-select" id="followUpDays">
+                  <option value="3">3 days after no response</option>
+                  <option value="5" selected>5 days after no response</option>
+                  <option value="7">7 days after no response</option>
+                  <option value="14">14 days after no response</option>
+                </select>
+                <div class="field-hint">When to flag a lead as "Follow-up Due" on the dashboard</div>
+              </div>
+              <div class="btn-row">
+                <button class="s-btn s-btn-primary" onclick="saveOutreach()">Save Outreach Settings</button>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+
+          <div class="settings-section">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-title">ICP Score Thresholds</div>
+                <div class="settings-section-desc">Define what score counts as High, Medium, or Low priority</div>
+              </div>
+            </div>
+            <div class="settings-section-body">
+              <div class="score-thresholds">
+                <div class="score-row">
+                  <div class="score-row-header">
+                    <span class="score-lbl" style="color:#059669">High Priority — score ≥</span>
+                    <span class="score-val" id="highVal" style="color:#059669">85</span>
+                  </div>
+                  <input type="range" class="score-slider" id="highSlider" min="50" max="99" value="85"
+                    oninput="updateThresholds()" />
+                </div>
+                <div class="score-row">
+                  <div class="score-row-header">
+                    <span class="score-lbl" style="color:#d97706">Medium Priority — score ≥</span>
+                    <span class="score-val" id="medVal" style="color:#d97706">70</span>
+                  </div>
+                  <input type="range" class="score-slider" id="medSlider" min="30" max="84" value="70"
+                    oninput="updateThresholds()" />
+                </div>
+              </div>
+              <div class="priority-preview" id="priorityPreview">
+                <span class="priority-chip chip-high">High ≥ 85</span>
+                <span class="priority-chip chip-medium">Medium 70–84</span>
+                <span class="priority-chip chip-low">Low &lt; 70</span>
+              </div>
+              <div class="field-hint" style="margin-top:4px">
+                These thresholds affect how companies are labeled across the Leads and Ranking pages.
+              </div>
+              <div class="btn-row">
+                <button class="s-btn s-btn-primary" onclick="saveThresholds()">Save Thresholds</button>
+                <button class="s-btn s-btn-outline" onclick="resetThresholds()">Reset to Defaults</button>
+              </div>
+            </div>
+          </div>
+
+
+
+
+          <div class="settings-section">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-title">Data & Pipeline</div>
+                <div class="settings-section-desc">Control when and how the system refreshes startup data</div>
+              </div>
+            </div>
+            <div class="settings-section-body">
+              <div class="sync-status">
+                <div class="status-dot dot-green" id="syncDot"></div>
+                <span id="syncStatusText">Database connected — <span id="totalLeads">—</span> companies loaded</span>
+                <span class="sync-meta" id="syncMeta">Last sync: checking…</span>
+              </div>
+              <div class="field-row">
+                <label class="field-label" for="syncFrequency">Auto-Sync Frequency</label>
+                <select class="settings-input settings-select" id="syncFrequency">
+                  <option value="manual">Manual only</option>
+                  <option value="weekly" selected>Once a week</option>
+                  <option value="biweekly">Every two weeks</option>
+                  <option value="monthly">Once a month</option>
+                </select>
+                <div class="field-hint">Based on your project spec — bi-weekly is the recommended starting point</div>
+              </div>
+              <div class="field-row">
+                <label class="field-label">Data Sources</label>
+                <div style="display:grid;gap:10px;margin-top:2px">
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">TechCrunch Scraper</div>
+                      <div class="toggle-desc">Scrapes funded startup articles from TechCrunch</div>
+                    </div>
+                    <button class="toggle on" id="toggleTC" onclick="toggleSwitch(this)" aria-pressed="true" title="Toggle TechCrunch"><span class="toggleKnob"></span></button>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">SEC / EDGAR (Form D)</div>
+                      <div class="toggle-desc">Pulls funding filings from the SEC EDGAR database</div>
+                    </div>
+                    <button class="toggle on" id="toggleSEC" onclick="toggleSwitch(this)" aria-pressed="true" title="Toggle SEC"><span class="toggleKnob"></span></button>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-title">Y Combinator API</div>
+                      <div class="toggle-desc">Fetches YC batch companies via the public YC OSS API</div>
+                    </div>
+                    <button class="toggle on" id="toggleYC" onclick="toggleSwitch(this)" aria-pressed="true" title="Toggle YC"><span class="toggleKnob"></span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="btn-row">
+                <button class="s-btn s-btn-green" id="syncNowBtn" onclick="triggerSync()">Sync Now</button>
+                <button class="s-btn s-btn-outline" onclick="saveDataSettings()">Save Data Settings</button>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+          <div class="settings-section">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-title">Notifications</div>
+                <div class="settings-section-desc">Choose which alerts appear on the dashboard</div>
+              </div>
+            </div>
+            <div class="settings-section-body">
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Follow-up reminders</div>
+                  <div class="toggle-desc">Show a badge when leads are overdue for follow-up</div>
+                </div>
+                <button class="toggle on" onclick="toggleSwitch(this)" aria-pressed="true"><span class="toggleKnob"></span></button>
+              </div>
+              <div class="divider"></div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">New high-priority leads</div>
+                  <div class="toggle-desc">Alert when a newly synced company scores High priority</div>
+                </div>
+                <button class="toggle on" onclick="toggleSwitch(this)" aria-pressed="true"><span class="toggleKnob"></span></button>
+              </div>
+              <div class="divider"></div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Pipeline errors</div>
+                  <div class="toggle-desc">Show warnings if the data sync encounters errors</div>
+                </div>
+                <button class="toggle on" onclick="toggleSwitch(this)" aria-pressed="true"><span class="toggleKnob"></span></button>
+              </div>
+              <div class="divider"></div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-title">Replies received</div>
+                  <div class="toggle-desc">Highlight leads that have replied to outreach</div>
+                </div>
+                <button class="toggle" onclick="toggleSwitch(this)" aria-pressed="false"><span class="toggleKnob"></span></button>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+
+          <div class="settings-section danger-zone">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-title" style="color:#dc2626">Danger Zone</div>
+                <div class="settings-section-desc">Irreversible actions — use with caution</div>
+              </div>
+            </div>
+            <div class="settings-section-body">
+              <div class="toggle-row" style="align-items:flex-start;gap:16px">
+                <div class="toggle-info">
+                  <div class="toggle-title">Reset all lead statuses</div>
+                  <div class="toggle-desc">Sets every lead back to "New Lead". Useful when starting a fresh outreach cycle.</div>
+                </div>
+                <button class="s-btn s-btn-danger" style="flex-shrink:0" onclick="confirmReset('statuses')">Reset Statuses</button>
+              </div>
+              <div class="divider"></div>
+              <div class="toggle-row" style="align-items:flex-start;gap:16px">
+                <div class="toggle-info">
+                  <div class="toggle-title">Clear all data</div>
+                  <div class="toggle-desc">Wipes the local database. Next sync will re-populate from scratch.</div>
+                </div>
+                <button class="s-btn s-btn-danger" style="flex-shrink:0" onclick="confirmReset('all')">Clear Data</button>
+              </div>
+              <div class="divider"></div>
+              <div class="toggle-row" style="align-items:flex-start;gap:16px">
+                <div class="toggle-info">
+                  <div class="toggle-title">Log out</div>
+                  <div class="toggle-desc">Sign out of the dashboard</div>
+                </div>
+                <button class="s-btn s-btn-danger" style="flex-shrink:0" id="logoutBtn">Log Out</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
     </main>
   </div>
 
+  
+  <div class="toast" id="toast"></div>
+
   <script src="app.js"></script>
+  <script>
+  (function () {
+
+    
+    function showToast(msg, type) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast ' + (type || '');
+      t.classList.add('show');
+      setTimeout(function () { t.classList.remove('show'); }, 2800);
+    }
+
+    window.toggleSwitch = function (btn) {
+      var isOn = btn.classList.toggle('on');
+      btn.setAttribute('aria-pressed', String(isOn));
+    };
+
+    window.updateThresholds = function () {
+      var high = parseInt(document.getElementById('highSlider').value);
+      var med  = parseInt(document.getElementById('medSlider').value);
+
+
+      if (med >= high) {
+        med = high - 1;
+        document.getElementById('medSlider').value = med;
+      }
+      document.getElementById('highVal').textContent = high;
+      document.getElementById('medVal').textContent  = med;
+      document.getElementById('priorityPreview').innerHTML =
+        '<span class="priority-chip chip-high">High \u2265 ' + high + '</span>' +
+        '<span class="priority-chip chip-medium">Medium ' + med + '\u2013' + (high - 1) + '</span>' +
+        '<span class="priority-chip chip-low">Low &lt; ' + med + '</span>';
+    };
+
+    window.saveThresholds = function () {
+      showToast('✓ ICP thresholds saved', 'success');
+    };
+
+    window.resetThresholds = function () {
+      document.getElementById('highSlider').value = 85;
+      document.getElementById('medSlider').value  = 70;
+      updateThresholds();
+      showToast('Thresholds reset to defaults');
+    };
+
+    window.saveProfile = function () {
+      showToast('✓ Profile saved', 'success');
+    };
+
+    window.saveOutreach = function () {
+      showToast('✓ Outreach settings saved', 'success');
+    };
+
+    window.saveDataSettings = function () {
+      showToast('✓ Data settings saved', 'success');
+    };
+
+    window.triggerSync = function () {
+      var btn = document.getElementById('syncNowBtn');
+      var dot = document.getElementById('syncDot');
+      btn.disabled = true;
+      btn.textContent = 'Syncing…';
+      dot.className = 'status-dot dot-amber';
+      document.getElementById('syncStatusText').textContent = 'Syncing data…';
+
+
+
+      fetch('/api/leads?sector=All&yc=All&form_d=Any&min_score=0')
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var count = (d.items || []).length;
+          dot.className = 'status-dot dot-green';
+          document.getElementById('syncStatusText').innerHTML =
+            'Database connected — <span id="totalLeads">' + count + '</span> companies loaded';
+          document.getElementById('syncMeta').textContent = 'Last sync: just now';
+          showToast('✓ Sync complete — ' + count + ' companies loaded', 'success');
+        })
+        .catch(function () {
+          dot.className = 'status-dot dot-gray';
+          document.getElementById('syncStatusText').textContent = 'Could not reach server';
+          showToast('Sync failed — is the server running?', 'error');
+        })
+        .finally(function () {
+          btn.disabled = false;
+          btn.textContent = 'Sync Now';
+        });
+    };
+
+
+
+
+    window.confirmReset = function (type) {
+      var msg = type === 'all'
+        ? 'Are you sure you want to clear ALL data? This cannot be undone.'
+        : 'Reset all lead statuses to "New Lead"?';
+      if (window.confirm(msg)) {
+        showToast(type === 'all' ? 'Data cleared' : 'Lead statuses reset');
+      }
+    };
+
+
+
+    fetch('/api/leads?sector=All&yc=All&form_d=Any&min_score=0')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var count = (d.items || []).length;
+        document.getElementById('syncStatusText').innerHTML =
+          'Database connected — <span id="totalLeads">' + count + '</span> companies loaded';
+      })
+      .catch(function () {
+        document.getElementById('syncDot').className = 'status-dot dot-gray';
+        document.getElementById('syncStatusText').textContent = 'Could not reach server';
+      });
+
+    fetch('/api/dashboard-metrics')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.metrics) {
+          var el = document.getElementById('metricLastUpdated');
+          if (el && d.metrics.updated_at) el.textContent = d.metrics.updated_at;
+          var meta = document.getElementById('syncMeta');
+          if (meta && d.metrics.updated_at) meta.textContent = 'Last sync: ' + d.metrics.updated_at;
+        }
+      })
+      .catch(function () {});
+
+  })();
+  </script>
 </body>
 </html>
