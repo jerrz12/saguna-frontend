@@ -3,20 +3,73 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Saguna Consulting Ranking</title>
+  <title>Saguna Consulting – Ranking</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="ranking-page.css" />
+  <style>
+    .ranking-wrap { padding: 0 2px; }
+    .ranking-summary { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+    .summary-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; text-align: center; }
+    .sum-val { font-size: 26px; font-weight: 800; color: #111827; font-variant-numeric: tabular-nums; }
+    .sum-lbl { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .ranking-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+    .rank-search { flex: 1; min-width: 180px; padding: 9px 13px; border: 1px solid #d1d5db; border-radius: 8px; font-family: Inter,sans-serif; font-size: 14px; outline: none; transition: border-color .15s; }
+    .rank-search:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
+    .rank-filter-btn { padding: 8px 14px; border: 1px solid #d1d5db; border-radius: 8px; background: white; font-family: Inter,sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; color: #374151; transition: all .15s; }
+    .rank-filter-btn:hover { border-color: #6366f1; color: #4f46e5; }
+    .rank-filter-btn.active { background: #111827; color: white; border-color: #111827; }
+    .rank-table-wrap { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+    .rank-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .rank-table thead th { background: #f9fafb; border-bottom: 1px solid #e5e7eb; padding: 11px 14px; text-align: left; font-size: 12px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; cursor: pointer; user-select: none; }
+    .rank-table thead th:hover { color: #111827; }
+    .rank-table thead th.sorted { color: #4f46e5; }
+    .rank-table tbody td { padding: 13px 14px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+    .rank-table tbody tr:last-child td { border-bottom: none; }
+    .rank-table tbody tr:hover { background: #fafafa; }
+    .rank-num { font-weight: 800; font-size: 15px; color: #9ca3af; font-variant-numeric: tabular-nums; }
+    .rank-num.top3 { color: #d97706; }
+    .rank-company { display: flex; align-items: center; gap: 10px; }
+    .rank-logo { width: 34px; height: 34px; border-radius: 8px; background: #e0e7ff; color: #4338ca; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .rank-company-name { font-weight: 600; color: #111827; }
+    .rank-sector { font-size: 12px; color: #6b7280; margin-top: 1px; }
+    .score-cell { min-width: 130px; }
+    .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .score-bar-bg { flex: 1; height: 6px; background: #e5e7eb; border-radius: 99px; overflow: hidden; }
+    .score-bar-fill { height: 100%; border-radius: 99px; }
+    .score-num { font-weight: 800; font-size: 14px; font-variant-numeric: tabular-nums; min-width: 26px; text-align: right; }
+    .score-fill-high { background: #10b981; } .score-fill-strong { background: #3b82f6; } .score-fill-warn { background: #f59e0b; } .score-fill-low { background: #ef4444; }
+    .score-text-high { color: #059669; } .score-text-strong { color: #2563eb; } .score-text-warn { color: #d97706; } .score-text-low { color: #dc2626; }
+    .priority-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .priority-badge.high   { background: rgba(16,185,129,.1); color: #059669; border: 1px solid rgba(16,185,129,.3); }
+    .priority-badge.medium { background: rgba(245,158,11,.1); color: #d97706; border: 1px solid rgba(245,158,11,.3); }
+    .priority-badge.low    { background: rgba(239,68,68,.08); color: #dc2626; border: 1px solid rgba(239,68,68,.25); }
+    .status-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; white-space: nowrap; }
+    .source-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+    .src-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+    .src-tag.tc  { background: #fef3c7; color: #92400e; }
+    .src-tag.yc  { background: #fee2e2; color: #991b1b; }
+    .src-tag.sec { background: #dbeafe; color: #1e40af; }
+    .src-tag.doc { background: #ede9fe; color: #5b21b6; }
+    .why-now-text { font-size: 13px; color: #374151; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rank-empty, .rank-loading { text-align: center; padding: 48px 20px; color: #9ca3af; font-size: 14px; }
+    .icp-legend { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; padding: 11px 16px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 16px; font-size: 12px; color: #6b7280; }
+    .icp-legend strong { color: #111827; margin-right: 4px; }
+    .legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 99px; margin-right: 4px; vertical-align: middle; }
+  </style>
 </head>
 <body data-page="ranking" class="salesDashBody">
   <div class="salesDash">
     <header class="salesTop" aria-label="Top Navigation">
       <div class="salesTopLeft">
-        <button class="collapseBtn topCollapseBtn" id="collapseBtn" type="button" aria-expanded="true" aria-label="Collapse menu" title="Collapse menu"><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="collapseBtn topCollapseBtn" id="collapseBtn" type="button" aria-expanded="true" aria-label="Collapse menu" title="Collapse menu">
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
       </div>
       <div class="salesTopRight">
-        <p>Last Updated: <span id="metricLastUpdated">XXXX</span></p>
+        <p>Last Updated: <span id="metricLastUpdated">—</span></p>
       </div>
     </header>
 
@@ -24,22 +77,201 @@
       <aside class="salesSidebar" aria-label="Sidebar Navigation">
         <nav class="nav salesNav">
           <a class="navItem" data-route="dashboard" data-short="D" href="index.html"><span class="navLabel">Dashboard</span></a>
-          <a class="navItem" data-route="leads" data-short="L" href="leads.html"><span class="navLabel">Leads</span></a>
-          <a class="navItem" data-route="messages" data-short="M" href="messages.html"><span class="navLabel">Messages</span></a>
-          <a class="navItem" data-route="ranking" data-short="R" href="ranking.html"><span class="navLabel">Ranking</span></a>
-          <a class="navItem" data-route="settings" data-short="S" href="settings.html"><span class="navLabel">Settings</span></a>
+          <a class="navItem" data-route="leads"     data-short="L" href="leads.html"><span class="navLabel">Leads</span></a>
+          <a class="navItem" data-route="messages"  data-short="M" href="messages.html"><span class="navLabel">Messages</span></a>
+          <a class="navItem active" data-route="ranking" data-short="R" href="ranking.html"><span class="navLabel">Ranking</span></a>
+          <a class="navItem" data-route="settings"  data-short="S" href="settings.html"><span class="navLabel">Settings</span></a>
         </nav>
       </aside>
 
       <section class="salesContent">
-        <div class="card wide">
-          <h2 class="pageTitleSm">Ranking</h2>
-          <p class="muted">Ranking page placeholder. Connect this to ranking data next.</p>
+        <div class="ranking-wrap">
+          <h2 class="pageTitleSm" style="text-align:left;margin-bottom:18px">ICP Ranking</h2>
+
+          <div class="ranking-summary">
+            <div class="summary-card"><div class="sum-val" id="sumTotal">—</div><div class="sum-lbl">Total Companies</div></div>
+            <div class="summary-card"><div class="sum-val" id="sumHigh"   style="color:#059669">—</div><div class="sum-lbl">High Priority</div></div>
+            <div class="summary-card"><div class="sum-val" id="sumMedium" style="color:#d97706">—</div><div class="sum-lbl">Medium Priority</div></div>
+            <div class="summary-card"><div class="sum-val" id="sumLow"    style="color:#dc2626">—</div><div class="sum-lbl">Low Priority</div></div>
+          </div>
+
+          <div class="icp-legend">
+            <strong>ICP Score:</strong>
+            <span><span class="legend-dot" style="background:#10b981"></span>90–100 Top Fit</span>
+            <span><span class="legend-dot" style="background:#3b82f6"></span>80–89 Strong Fit</span>
+            <span><span class="legend-dot" style="background:#f59e0b"></span>70–79 Moderate</span>
+            <span><span class="legend-dot" style="background:#ef4444"></span>&lt;70 Low Fit</span>
+            <span style="margin-left:auto;color:#9ca3af">Ranked highest → lowest score</span>
+          </div>
+
+          <div class="ranking-controls">
+            <input class="rank-search" id="rankSearch" type="text" placeholder="Search companies, sector…" aria-label="Search"/>
+            <button class="rank-filter-btn active" onclick="setPriorityFilter('All',this)">All</button>
+            <button class="rank-filter-btn" onclick="setPriorityFilter('High',this)">High</button>
+            <button class="rank-filter-btn" onclick="setPriorityFilter('Medium',this)">Medium</button>
+            <button class="rank-filter-btn" onclick="setPriorityFilter('Low',this)">Low</button>
+          </div>
+
+          <div class="rank-table-wrap">
+            <table class="rank-table">
+              <thead>
+                <tr>
+                  <th onclick="sortBy('rank')"     class="sorted" data-key="rank">Rank</th>
+                  <th onclick="sortBy('company')"  data-key="company">Company</th>
+                  <th onclick="sortBy('score')"    data-key="score">ICP Score</th>
+                  <th onclick="sortBy('priority')" data-key="priority">Priority</th>
+                  <th>Why Now?</th>
+                  <th>Sources</th>
+                  <th onclick="sortBy('status')"   data-key="status">Status</th>
+                  <th>Website</th>
+                </tr>
+              </thead>
+              <tbody id="rankTbody">
+                <tr><td colspan="8" class="rank-loading">Loading ranking data…</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
     </main>
   </div>
 
   <script src="app.js"></script>
+  <script>
+  (function () {
+    var allLeads = [];
+    var priorityFilter = 'All';
+    var searchTerm = '';
+    var sortKey = 'rank';
+    var sortAsc = true;
+
+    function loadRanking() {
+      fetch('/api/leads?sector=All&yc=All&form_d=Any&min_score=0')
+        .then(function (r) { return r.json(); })
+        .then(function (payload) {
+          allLeads = (payload.items || []).map(function (item) {
+            var score = Number(item.score || 0);
+            return Object.assign({}, item, {
+              score: score,
+              priority: score >= 85 ? 'High' : score >= 70 ? 'Medium' : 'Low'
+            });
+          });
+          allLeads.sort(function (a, b) { return b.score - a.score; });
+          allLeads.forEach(function (l, i) { l.rank = i + 1; });
+          updateSummary();
+          render();
+        })
+        .catch(function () {
+          document.getElementById('rankTbody').innerHTML =
+            '<tr><td colspan="8" class="rank-empty">⚠ Could not load data. Make sure <code>python3 server.py</code> is running.</td></tr>';
+        });
+    }
+
+    function updateSummary() {
+      var high   = allLeads.filter(function (l) { return l.priority === 'High';   }).length;
+      var medium = allLeads.filter(function (l) { return l.priority === 'Medium'; }).length;
+      var low    = allLeads.filter(function (l) { return l.priority === 'Low';    }).length;
+      document.getElementById('sumTotal').textContent  = allLeads.length;
+      document.getElementById('sumHigh').textContent   = high;
+      document.getElementById('sumMedium').textContent = medium;
+      document.getElementById('sumLow').textContent    = low;
+    }
+
+    function getVisible() {
+      var term = searchTerm.toLowerCase();
+      return allLeads
+        .filter(function (l) {
+          var pOk = priorityFilter === 'All' || l.priority === priorityFilter;
+          var sOk = !term ||
+            String(l.company  || '').toLowerCase().indexOf(term) !== -1 ||
+            String(l.sector   || '').toLowerCase().indexOf(term) !== -1 ||
+            String(l.why_now  || '').toLowerCase().indexOf(term) !== -1;
+          return pOk && sOk;
+        })
+        .sort(function (a, b) {
+          if (sortKey === 'rank' || sortKey === 'score') {
+            return sortKey === 'rank'
+              ? b.score - a.score
+              : sortAsc ? a.score - b.score : b.score - a.score;
+          }
+          var av = String(a[sortKey] || '').toLowerCase();
+          var bv = String(b[sortKey] || '').toLowerCase();
+          return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+        });
+    }
+
+    function render() {
+      var rows = getVisible();
+      var tbody = document.getElementById('rankTbody');
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="rank-empty">No companies match your filters.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(function (l) {
+        var sc = l.score >= 90 ? 'high' : l.score >= 80 ? 'strong' : l.score >= 70 ? 'warn' : 'low';
+        var initials = String(l.company || '').split(/\s+/).slice(0,2).map(function(p){return(p[0]||'').toUpperCase();}).join('');
+        var sources  = String(l.sources || '').split('|').filter(Boolean).map(function(s){
+          s = s.trim();
+          var cls = s==='TC'?'tc':s==='YC'?'yc':s==='SEC'?'sec':'doc';
+          return '<span class="src-tag '+cls+'">'+esc(s)+'</span>';
+        }).join('');
+        var website = l.website
+          ? '<a href="'+esc(l.website)+'" target="_blank" rel="noopener" style="color:#2563eb;font-weight:600;font-size:12px;text-decoration:none">Visit ↗</a>'
+          : '<span style="color:#d1d5db">—</span>';
+        return '<tr>'+
+          '<td><span class="rank-num'+(l.rank<=3?' top3':'')+'">'+l.rank+'</span></td>'+
+          '<td><div class="rank-company"><div class="rank-logo">'+esc(initials||'CO')+'</div><div>'+
+            '<div class="rank-company-name">'+esc(l.company)+'</div>'+
+            '<div class="rank-sector">'+esc(l.sector||'')+'</div></div></div></td>'+
+          '<td class="score-cell"><div class="score-bar-wrap">'+
+            '<div class="score-bar-bg"><div class="score-bar-fill score-fill-'+sc+'" style="width:'+l.score+'%"></div></div>'+
+            '<span class="score-num score-text-'+sc+'">'+l.score+'</span></div></td>'+
+          '<td><span class="priority-badge '+l.priority.toLowerCase()+'">'+l.priority+'</span></td>'+
+          '<td><div class="why-now-text" title="'+esc(l.why_now||'')+'">'+esc(l.why_now||'—')+'</div></td>'+
+          '<td><div class="source-tags">'+(sources||'<span style="color:#d1d5db">—</span>')+'</div></td>'+
+          '<td><span class="status-badge">'+esc(l.status||'New Lead')+'</span></td>'+
+          '<td>'+website+'</td>'+
+        '</tr>';
+      }).join('');
+    }
+
+    window.sortBy = function (key) {
+      sortAsc = sortKey === key ? !sortAsc : key !== 'score';
+      sortKey = key;
+      Array.prototype.slice.call(document.querySelectorAll('.rank-table thead th[data-key]')).forEach(function (th) {
+        th.classList.toggle('sorted', th.getAttribute('data-key') === key);
+      });
+      render();
+    };
+
+    window.setPriorityFilter = function (val, btn) {
+      priorityFilter = val;
+      Array.prototype.slice.call(document.querySelectorAll('.rank-filter-btn')).forEach(function (b) {
+        b.classList.toggle('active', b === btn);
+      });
+      render();
+    };
+
+    var searchTimer;
+    document.getElementById('rankSearch').addEventListener('input', function () {
+      clearTimeout(searchTimer);
+      var v = this.value;
+      searchTimer = setTimeout(function () { searchTerm = v; render(); }, 150);
+    });
+
+    function esc(s) {
+      return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    fetch('/api/dashboard-metrics')
+      .then(function(r){return r.json();})
+      .then(function(d){
+        var el = document.getElementById('metricLastUpdated');
+        if (el && d.metrics && d.metrics.updated_at) el.textContent = d.metrics.updated_at;
+      }).catch(function(){});
+
+    loadRanking();
+  })();
+  </script>
 </body>
 </html>
