@@ -40,7 +40,7 @@ def fetch_leads(query: dict[str, list[str]]) -> list[dict[str, object]]:
 
     sql = f"""
         SELECT
-            lead_id, company, sector, why_now, sources, score, status, yc_filter, form_d_filter
+            lead_id, company, sector, summary, why_now, sources, score, contact, status, yc_filter, form_d_filter
         FROM leads
         WHERE {" AND ".join(clauses)}
         ORDER BY score DESC, lead_id ASC
@@ -111,6 +111,82 @@ def fetch_dashboard_panel_items(panel_type: str, limit: int = 6) -> list[dict[st
         conn.row_factory = sqlite3.Row
         rows = conn.execute(sql, (panel_type, limit)).fetchall()
     return [dict(r) for r in rows]
+
+
+def fetch_lead_detail(query: dict[str, list[str]]) -> dict[str, object] | None:
+    lead_id_raw = (query.get("lead_id", [""])[0] or "").strip()
+    company = (query.get("company", [""])[0] or "").strip()
+
+    if lead_id_raw:
+        try:
+            lead_id = int(lead_id_raw)
+        except ValueError as exc:
+            raise ValueError("Invalid lead_id") from exc
+
+        sql = """
+            SELECT
+                l.lead_id,
+                l.company,
+                l.sector,
+                l.summary,
+                l.why_now,
+                l.sources,
+                l.score,
+                l.contact,
+                l.status,
+                l.yc_filter,
+                l.form_d_filter,
+                l.website,
+                l.updated_at,
+                rd.icp_reason,
+                rd.growth_signal,
+                rd.decision_stage,
+                rd.outreach_angle,
+                rd.risk_notes,
+                rd.next_step,
+                rd.updated_at AS ranking_updated_at
+            FROM leads l
+            LEFT JOIN ranking_detail rd ON rd.lead_id = l.lead_id
+            WHERE l.lead_id = ?
+            LIMIT 1
+        """
+        params: tuple[object, ...] = (lead_id,)
+    elif company:
+        sql = """
+            SELECT
+                l.lead_id,
+                l.company,
+                l.sector,
+                l.summary,
+                l.why_now,
+                l.sources,
+                l.score,
+                l.contact,
+                l.status,
+                l.yc_filter,
+                l.form_d_filter,
+                l.website,
+                l.updated_at,
+                rd.icp_reason,
+                rd.growth_signal,
+                rd.decision_stage,
+                rd.outreach_angle,
+                rd.risk_notes,
+                rd.next_step,
+                rd.updated_at AS ranking_updated_at
+            FROM leads l
+            LEFT JOIN ranking_detail rd ON rd.lead_id = l.lead_id
+            WHERE LOWER(l.company) = LOWER(?)
+            LIMIT 1
+        """
+        params = (company,)
+    else:
+        raise ValueError("Missing lead_id or company")
+
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.row_factory = sqlite3.Row
+        row = conn.execute(sql, params).fetchone()
+    return dict(row) if row else None
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -214,6 +290,30 @@ class Handler(SimpleHTTPRequestHandler):
                 return
 
             payload = json.dumps({"items": data}).encode("utf-8")
+            self.send_response(HTTPStatus.OK)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if parsed.path == "/api/lead-detail":
+            try:
+                data = fetch_lead_detail(parse_qs(parsed.query))
+                if not data:
+                    self.send_response(HTTPStatus.NOT_FOUND)
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"error": "Lead not found"}).encode("utf-8"))
+                    return
+            except Exception as exc:  # noqa: BLE001
+                self.send_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(exc)}).encode("utf-8"))
+                return
+
+            payload = json.dumps({"item": data}).encode("utf-8")
             self.send_response(HTTPStatus.OK)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(payload)))

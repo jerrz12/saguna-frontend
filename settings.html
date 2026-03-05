@@ -607,6 +607,15 @@
           document.getElementById('syncStatusText').innerHTML =
             'Database connected — <span id="totalLeads">' + count + '</span> companies loaded';
           document.getElementById('syncMeta').textContent = 'Last sync: just now';
+          var now = new Date();
+          var ts = now.getFullYear() + '-' +
+            String(now.getMonth() + 1).padStart(2, '0') + '-' +
+            String(now.getDate()).padStart(2, '0') + ' ' +
+            String(now.getHours()).padStart(2, '0') + ':' +
+            String(now.getMinutes()).padStart(2, '0');
+          localStorage.setItem('sagunaLastUpdated', ts);
+          var updEl = document.getElementById('metricLastUpdated');
+          if (updEl) updEl.textContent = ts;
           showToast('✓ Sync complete — ' + count + ' companies loaded', 'success');
         })
         .catch(function () {
@@ -651,7 +660,7 @@
       .then(function (d) {
         if (d.metrics) {
           var el = document.getElementById('metricLastUpdated');
-          if (el && d.metrics.updated_at) el.textContent = d.metrics.updated_at;
+          if (el && d.metrics.updated_at && !localStorage.getItem('sagunaLastUpdated')) el.textContent = d.metrics.updated_at;
           var meta = document.getElementById('syncMeta');
           if (meta && d.metrics.updated_at) meta.textContent = 'Last sync: ' + d.metrics.updated_at;
         }

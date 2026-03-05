@@ -33,7 +33,8 @@
     .rank-num.top3 { color: #d97706; }
     .rank-company { display: flex; align-items: center; gap: 10px; }
     .rank-logo { width: 34px; height: 34px; border-radius: 8px; background: #e0e7ff; color: #4338ca; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .rank-company-name { font-weight: 600; color: #111827; }
+    .rank-company-name { font-weight: 600; color: #111827; text-decoration: none; }
+    .rank-company-name:hover, .rank-company-name:focus-visible { color: #2563eb; text-decoration: underline; }
     .rank-sector { font-size: 12px; color: #6b7280; margin-top: 1px; }
     .score-cell { min-width: 130px; }
     .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
@@ -221,7 +222,7 @@
         return '<tr>'+
           '<td><span class="rank-num'+(l.rank<=3?' top3':'')+'">'+l.rank+'</span></td>'+
           '<td><div class="rank-company"><div class="rank-logo">'+esc(initials||'CO')+'</div><div>'+
-            '<div class="rank-company-name">'+esc(l.company)+'</div>'+
+            '<a class="rank-company-name" href="lead-detail.html?lead_id='+encodeURIComponent(String(l.lead_id || ''))+'">'+esc(l.company)+'</a>'+
             '<div class="rank-sector">'+esc(l.sector||'')+'</div></div></div></td>'+
           '<td class="score-cell"><div class="score-bar-wrap">'+
             '<div class="score-bar-bg"><div class="score-bar-fill score-fill-'+sc+'" style="width:'+l.score+'%"></div></div>'+
@@ -267,7 +268,7 @@
       .then(function(r){return r.json();})
       .then(function(d){
         var el = document.getElementById('metricLastUpdated');
-        if (el && d.metrics && d.metrics.updated_at) el.textContent = d.metrics.updated_at;
+        if (el && d.metrics && d.metrics.updated_at && !localStorage.getItem('sagunaLastUpdated')) el.textContent = d.metrics.updated_at;
       }).catch(function(){});
 
     loadRanking();

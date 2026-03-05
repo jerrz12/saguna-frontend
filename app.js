@@ -136,7 +136,7 @@ async function loadDashboardMetrics() {
     if (els.metricOutreachWeek) els.metricOutreachWeek.textContent = String(m.outreach_sent_week);
     if (els.metricPipelineErrors) els.metricPipelineErrors.textContent = String(m.pipeline_errors);
     if (els.metricPipelineRetries) els.metricPipelineRetries.textContent = String(m.pipeline_retries);
-    if (els.metricLastUpdated && m.updated_at) els.metricLastUpdated.textContent = String(m.updated_at);
+    if (els.metricLastUpdated && m.updated_at && !localStorage.getItem('sagunaLastUpdated')) els.metricLastUpdated.textContent = String(m.updated_at);
   } catch (_error) {
     // Keep HTML fallback values when the API is not available.
   }
@@ -231,11 +231,19 @@ function bindSwitch(btn) {
   });
 }
 
+function loadLastUpdated() {
+  var el = document.getElementById('metricLastUpdated');
+  if (!el) return;
+  var saved = localStorage.getItem('sagunaLastUpdated');
+  if (saved) el.textContent = saved;
+}
+
 (function init() {
   state.displayName = localStorage.getItem("sagunaDisplayName") || "Jerry";
 
   markActiveNav();
   syncAvatar();
+  loadLastUpdated();
 
   if (els.startupSearch) {
     els.startupSearch.addEventListener("input", (e) => renderRecent(e.target.value));

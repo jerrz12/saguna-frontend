@@ -17,7 +17,7 @@
         <button class="collapseBtn topCollapseBtn" id="collapseBtn" type="button" aria-expanded="true" aria-label="Collapse menu" title="Collapse menu"><svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
       </div>
       <div class="salesTopRight">
-        <p>Last Updated: XXXX</p>
+        <p>Last Updated: <span id="metricLastUpdated">—</span></p>
       </div>
     </header>
 
@@ -109,7 +109,7 @@
 
       <div class="action-row">
         <a class="btn btn-primary" href="./outreach-draft.html">+ Generate Drafts</a>
-        <button class="btn btn-secondary">Bulk Update Status</button>
+        <button class="btn btn-secondary" id="bulkUpdateBtn">Bulk Update Status</button>
       </div>
     </section>
 
@@ -118,10 +118,11 @@
         <thead>
           <tr>
             <th class="sortable-th" data-sort-key="company">Company <span class="th-chev">&#9662;</span></th>
-            <th class="sortable-th" data-sort-key="sector">Sector <span class="th-chev">&#9662;</span></th>
+            <th class="sortable-th" data-sort-key="summary">Summary <span class="th-chev">&#9662;</span></th>
             <th class="sortable-th" data-sort-key="why_now">Why Now? <span class="th-chev">&#9662;</span></th>
             <th class="sortable-th" data-sort-key="sources">Sources <span class="th-chev">&#9662;</span></th>
             <th class="sortable-th" data-sort-key="score">Score <span class="th-chev">&#9662;</span></th>
+            <th class="sortable-th" data-sort-key="contact">Contact <span class="th-chev">&#9662;</span></th>
             <th class="sortable-th" data-sort-key="status">Status <span class="th-chev">&#9662;</span></th>
           </tr>
         </thead>
@@ -264,17 +265,17 @@
       }
 
       function scoreClass(score) {
-        if (score >= 90) return "good";
+        if (score >= 90) return "high";
         if (score >= 80) return "strong";
-        if (score >= 75) return "warn";
+        if (score >= 70) return "warn";
         return "low";
       }
 
       function sourceBadge(source) {
-        if (source === "TC") return '<span class="src tc">TC</span>';
-        if (source === "YC") return '<span class="src yc">Y</span>';
-        if (source === "SEC") return '<span class="src sec">SEC</span>';
-        return '<span class="src file">DOC</span>';
+        if (source === "TC") return '<span class="src-tag tc">TC</span>';
+        if (source === "YC") return '<span class="src-tag yc">YC</span>';
+        if (source === "SEC") return '<span class="src-tag sec">SEC</span>';
+        return '<span class="src-tag doc">DOC</span>';
       }
 
       function escapeHtml(value) {
@@ -294,7 +295,7 @@
         });
 
         if (!items.length) {
-          tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#7a8597;">No leads found for current filters.</td></tr>';
+          tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#7a8597;">No leads found for current filters.</td></tr>';
           return;
         }
 
@@ -311,14 +312,17 @@
             .join("")
             .toUpperCase();
           var statusSafe = escapeHtml(item.status || "New Lead");
+          var sc = scoreClass(Number(item.score || 0));
+          var scoreVal = Number(item.score || 0);
 
           return '' +
             '<tr>' +
-              '<td><div class="company"><span class="logo med">' + escapeHtml(companyInitials || "LD") + '</span><span class="name">' + escapeHtml(item.company) + '</span></div></td>' +
-              '<td>' + escapeHtml(item.sector) + '</td>' +
-              '<td>' + escapeHtml(item.why_now) + '</td>' +
-              '<td><div class="sources">' + sources + '</div></td>' +
-              '<td><span class="score ' + scoreClass(Number(item.score || 0)) + '">' + Number(item.score || 0) + '</span></td>' +
+              '<td><div class="rank-company"><div class="rank-logo">' + escapeHtml(companyInitials || "LD") + '</div><div><a class="rank-company-name" href="lead-detail.html?lead_id=' + encodeURIComponent(String(item.lead_id || "")) + '">' + escapeHtml(item.company) + '</a><div class="rank-sector">' + escapeHtml(item.sector) + '</div></div></div></td>' +
+              '<td><div class="summary-text" title="' + escapeHtml(item.summary || '') + '">' + escapeHtml(item.summary || '—') + '</div></td>' +
+              '<td><div class="why-now-text" title="' + escapeHtml(item.why_now || '') + '">' + escapeHtml(item.why_now || '—') + '</div></td>' +
+              '<td><div class="source-tags">' + (sources || '<span style="color:#d1d5db">—</span>') + '</div></td>' +
+              '<td class="score-cell"><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill score-fill-' + sc + '" style="width:' + scoreVal + '%"></div></div><span class="score-num score-text-' + sc + '">' + scoreVal + '</span></div></td>' +
+              '<td><div class="contact-text">' + escapeHtml(item.contact || '—') + '</div></td>' +
               '<td>' +
                 '<div class="status-dropdown" data-initial="' + statusSafe + '">' +
                   '<button class="status-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">' +
@@ -441,6 +445,21 @@
 
       updateSortHeaderUI();
       loadLeads();
+
+      var bulkUpdateBtn = document.getElementById('bulkUpdateBtn');
+      if (bulkUpdateBtn) {
+        bulkUpdateBtn.addEventListener('click', function () {
+          var now = new Date();
+          var ts = now.getFullYear() + '-' +
+            String(now.getMonth() + 1).padStart(2, '0') + '-' +
+            String(now.getDate()).padStart(2, '0') + ' ' +
+            String(now.getHours()).padStart(2, '0') + ':' +
+            String(now.getMinutes()).padStart(2, '0');
+          localStorage.setItem('sagunaLastUpdated', ts);
+          var el = document.getElementById('metricLastUpdated');
+          if (el) el.textContent = ts;
+        });
+      }
     })();
   </script>
 </body>

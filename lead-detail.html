@@ -1,1 +1,276 @@
-^^_
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lead Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./lead-detail.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1>Lead Detail</h1>
+      <div class="crumbs">Leads <span>&rsaquo;</span> <strong id="crumb-company">Loading...</strong></div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-primary">+ Generate Draft</button>
+      <button class="btn btn-muted">Opt-out</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="content-card">
+      <div class="lead-header">
+        <div class="lead-logo" id="lead-logo">LD</div>
+        <div class="lead-header-main">
+          <h2 id="company-name">Loading lead...</h2>
+          <a href="#" class="lead-link" id="company-website" hidden></a>
+          <div class="lead-meta-row">
+            <span class="pill" id="company-sector">-</span>
+            <span class="inline-meta"><strong>Lead ID:</strong> <span id="lead-id">-</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head">Company Profile</div>
+
+      <div class="profile-grid">
+        <aside class="left-col">
+          <section class="left-block">
+            <h3 class="left-title">Company Snapshot</h3>
+            <div class="company-line">
+              <div class="small-logo" id="snapshot-logo">LD</div>
+              <div class="company-name" id="snapshot-name">-</div>
+            </div>
+            <a class="website" href="#" id="snapshot-website" hidden></a>
+
+            <ul class="meta">
+              <li><strong>Sector:</strong> <span id="snapshot-sector">-</span></li>
+              <li><strong>YC Filter:</strong> <span id="snapshot-yc">-</span></li>
+              <li><strong>Form D:</strong> <span id="snapshot-formd">-</span></li>
+              <li><strong>Updated:</strong> <span id="snapshot-updated">-</span></li>
+            </ul>
+          </section>
+
+          <section class="left-block">
+            <h3 class="left-title">Primary Contact</h3>
+            <div class="people-list">
+              <div class="person">
+                <div class="avatar p1" id="contact-avatar">CT</div>
+                <div>
+                  <div class="person-name"><strong id="contact-name">No contact available</strong></div>
+                  <div class="muted" id="contact-detail">-</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="left-block">
+            <h3 class="left-title">Status</h3>
+            <div class="status-pill" id="status-pill">-</div>
+          </section>
+        </aside>
+
+        <section class="main-col">
+          <article class="signal-card">
+            <div class="signal-top">
+              <div class="signal-score-wrap">
+                <span class="signal-label">ICP Score</span>
+                <span class="score-tag" id="score-tag">0</span>
+              </div>
+              <div class="date" id="score-updated">Updated -</div>
+            </div>
+            <div class="signal-item">
+              <strong>Summary</strong>
+              <div id="lead-summary" class="muted">-</div>
+            </div>
+            <div class="signal-item">
+              <strong>Why now</strong>
+              <div id="lead-why-now" class="muted">-</div>
+            </div>
+          </article>
+
+          <nav class="tabs">
+            <a class="active" href="#">Signals</a>
+            <a href="#">Sources</a>
+            <a href="#">About</a>
+          </nav>
+
+          <article class="timeline">
+            <div class="event">
+              <div class="event-icon">DB</div>
+              <div class="event-body">
+                <div class="event-row">
+                  <h3>Source Evidence <span class="chip" id="source-count">0</span></h3>
+                </div>
+                <p class="muted" id="sources-line">-</p>
+              </div>
+            </div>
+          </article>
+        </section>
+      </div>
+    </section>
+
+    <aside class="right-rail">
+      <section class="rail-card">
+        <h4>Contact Status</h4>
+        <div class="status-pill" id="rail-status">-</div>
+
+        <h4>Internal Notes</h4>
+        <div class="notes" id="rail-notes">Load a lead from the Leads page to see company-specific details from the database.</div>
+      </section>
+
+      <section class="rail-card">
+        <h4>Evidence &amp; Sources</h4>
+        <div class="source">
+          <span class="source-badge sec" id="source-badge">DB</span>
+          <div>
+            <strong>Database Sources</strong>
+            <p id="source-description">-</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="rail-card">
+        <h4>Lead Signals</h4>
+        <ul class="checklist" id="signal-list">
+          <li>Open this page from a lead row to load details.</li>
+        </ul>
+      </section>
+    </aside>
+  </main>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var leadId = (params.get("lead_id") || "").trim();
+      var company = (params.get("company") || "").trim();
+
+      function setText(id, value) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = value || "-";
+      }
+
+      function setLink(id, url) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (!url) {
+          el.hidden = true;
+          el.removeAttribute("href");
+          el.textContent = "";
+          return;
+        }
+        var formatted = /^https?:\/\//i.test(url) ? url : ("https://" + url);
+        el.hidden = false;
+        el.href = formatted;
+        el.textContent = url;
+      }
+
+      function initials(name) {
+        return String(name || "")
+          .trim()
+          .split(/\s+/)
+          .slice(0, 2)
+          .map(function (part) { return (part[0] || "").toUpperCase(); })
+          .join("") || "LD";
+      }
+
+      function renderSignals(item) {
+        var list = document.getElementById("signal-list");
+        if (!list) return;
+        var points = [];
+
+        if (item.icp_reason) points.push("ICP Fit: " + item.icp_reason);
+        if (item.growth_signal) points.push("Growth Signal: " + item.growth_signal);
+        if (item.next_step) points.push("Next Step: " + item.next_step);
+        if (item.sector) points.push("Sector: " + item.sector);
+        if (item.yc_filter) points.push("YC: " + item.yc_filter);
+        if (item.form_d_filter) points.push("Form D: " + item.form_d_filter);
+        if (item.status) points.push("Status: " + item.status);
+        if (item.contact) points.push("Contact present");
+        if (!points.length) points.push("No additional signals available.");
+
+        list.innerHTML = points.map(function (text) {
+          return "<li>" + text.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</li>";
+        }).join("");
+      }
+
+      function render(item) {
+        var name = item.company || "Unknown Company";
+        var logo = initials(name);
+        var sources = String(item.sources || "").split("|").map(function (s) { return s.trim(); }).filter(Boolean);
+        var contact = String(item.contact || "").trim();
+
+        setText("crumb-company", name);
+        setText("company-name", name);
+        setText("company-sector", item.sector || "Unknown Sector");
+        setText("lead-id", String(item.lead_id || "-"));
+
+        setText("snapshot-name", name);
+        setText("snapshot-sector", item.sector || "-");
+        setText("snapshot-yc", item.yc_filter || "-");
+        setText("snapshot-formd", item.form_d_filter || "-");
+        setText("snapshot-updated", item.updated_at || "-");
+
+        setLink("company-website", item.website || "");
+        setLink("snapshot-website", item.website || "");
+
+        setText("status-pill", item.status || "-");
+        setText("rail-status", item.status || "-");
+        setText("score-tag", String(Number(item.score || 0)));
+        setText("score-updated", "Updated " + (item.ranking_updated_at || item.updated_at || "-"));
+
+        setText("lead-summary", item.icp_reason || item.summary || "No summary available.");
+        setText("lead-why-now", item.outreach_angle || item.why_now || "No why-now context available.");
+
+        setText("sources-line", item.growth_signal || (sources.length ? sources.join(", ") : "No sources recorded."));
+        setText("source-count", String(sources.length));
+        setText("source-badge", sources.length ? sources[0].slice(0, 3).toUpperCase() : "DB");
+        setText("source-description", sources.length ? ("Tags: " + sources.join(", ")) : "No source tags in DB.");
+
+        setText("rail-notes", item.risk_notes || "Lead details loaded from the database for this selected company.");
+
+        setText("lead-logo", logo);
+        setText("snapshot-logo", logo);
+        setText("contact-avatar", contact ? initials(contact) : "CT");
+        setText("contact-name", contact || "No contact available");
+        setText("contact-detail", item.decision_stage || (contact ? "Primary contact from leads table" : "Contact field is empty in DB"));
+
+        renderSignals(item);
+      }
+
+      function renderError(message) {
+        setText("crumb-company", "Not found");
+        setText("company-name", "Lead not found");
+        setText("lead-summary", message);
+        setText("rail-notes", message);
+      }
+
+      if (!leadId && !company) {
+        renderError("No lead selected. Open this page from the Leads table.");
+        return;
+      }
+
+      var query = new URLSearchParams();
+      if (leadId) query.set("lead_id", leadId);
+      if (!leadId && company) query.set("company", company);
+
+      fetch("/api/lead-detail?" + query.toString())
+        .then(function (res) {
+          if (!res.ok) throw new Error("Unable to load lead detail");
+          return res.json();
+        })
+        .then(function (payload) {
+          if (!payload || !payload.item) throw new Error("Lead not found");
+          render(payload.item);
+        })
+        .catch(function () {
+          renderError("Unable to load lead detail from DB.");
+        });
+    })();
+  </script>
+</body>
+</html>
